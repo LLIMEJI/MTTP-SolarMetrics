@@ -1,10 +1,15 @@
 $(document).ready(function() {
 
-    function getData(url, chartToUpdate) {
-        $.getJSON('http://sosvetom.ru/_api/get_metrics/?num=100'+url,
+    function getData(chartToUpdate) {
+        $.getJSON('http://sosvetom.ru/_api/get_metrics/?num=100&col=1',
             function(data){
                 var point = chartToUpdate.series[0].points[0];
                 var newVal = data[0][1];
+                if (newVal >= 1100) {
+                    chartToUpdate.yAxis[0].setExtremes(0,newVal+100);
+                } else {
+                    chartToUpdate.yAxis[0].setExtremes(0,1100);
+                }
                 point.update(newVal);
             });  
     }
@@ -28,7 +33,7 @@ $(document).ready(function() {
         },
 
         title: {
-            text: null
+            text: 'Номинальная мощность электроэнергии'
         },
 
         tooltip: {
@@ -79,7 +84,7 @@ $(document).ready(function() {
         // the value axis
         yAxis: {
             min: 0,
-            max: 1300,
+            max: 1100,
 
             minorTickInterval: 'auto',
             minorTickWidth: 1,
@@ -132,12 +137,10 @@ $(document).ready(function() {
     // Обновление значений
     function (chart) {
         if (!chart.renderer.forExport) {
-            var request = '&col=1';
-
-            getData(request,chart);
+            getData(chart);
             getWeather();
             setInterval(function () {
-                getData(request,chart);
+                getData(chart);
                 getWeather();       
             }, 60000);
         }
