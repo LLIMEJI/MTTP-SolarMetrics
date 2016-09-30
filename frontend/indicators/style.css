@@ -1,5 +1,5 @@
-rect {
-    border: 0px;
+body div{
+	margin: auto;
 }
 #weather {
     position:absolute; 
