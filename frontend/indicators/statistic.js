@@ -1,5 +1,5 @@
 function requestData(chartToUpdate,url) {
-    $.getJSON('http://sosvetom.ru/_api/get_metrics/'+url,
+    $.getJSON('http://sosvetom.ru/_api/get_metrics/?offset='+url,
         function(data){
             var chart = chartToUpdate.series[0];
             chart.setData(data);
@@ -15,11 +15,11 @@ $(document).ready(function() {
         credits: {
             enabled: false
         },
-        exporting: {
-            enabled: false
+        exporting: { 
+            enabled: false 
         },
         chart: {
-            type: 'column',
+            type: 'column', 
             backgroundColor: null
         },
         title: {
@@ -36,32 +36,32 @@ $(document).ready(function() {
         legend: {
             enabled: false
         },
-        series: [{
+        series: [{ 
             name: 'Мощность',
 
         }]
     },
     // Обновление значений
     function (chart) {
-        var request = '?offset=day'
+        var request = 'day'
         if (!chart.renderer.forExport) {
             requestData(chart,request);
             setInterval(function () {
                 requestData(chart,request);
             }, 60000);
         }
-    });
+    }); 
 
     //Статистика за месяц
     $('#chart_month').highcharts({
         credits: {
             enabled: false
         },
-        exporting: {
-            enabled: false
+        exporting: { 
+            enabled: false 
         },
         chart: {
-            type: 'column',
+            type: 'column', 
             backgroundColor: null
         },
         title: {
@@ -69,7 +69,7 @@ $(document).ready(function() {
         },
         xAxis: {
             type: 'datetime',
-            tickInterval: 3600 * 1000
+            tickInterval: 30 * 3600 * 1000
         },
         yAxis: {
             title: {text: 'Мощность электроэнергии(Вт)'},
@@ -78,32 +78,32 @@ $(document).ready(function() {
         legend: {
             enabled: false
         },
-        series: [{
+        series: [{ 
             name: 'Мощность',
 
         }]
     },
 
     function (chart) {
-        var request = '?offset=month'
+        var request = 'month'
         if (!chart.renderer.forExport) {
             requestData(chart,request);
             setInterval(function () {
                 requestData(chart,request);
             }, 60000);
         }
-    });
+    }); 
 
     //Статистика за год
     $('#chart_year').highcharts({
         credits: {
             enabled: false
         },
-        exporting: {
-            enabled: false
+        exporting: { 
+            enabled: false 
         },
         chart: {
-            type: 'column',
+            type: 'column', 
             backgroundColor: null
         },
         title: {
@@ -111,7 +111,7 @@ $(document).ready(function() {
         },
         xAxis: {
             type: 'datetime',
-            tickInterval: 3600 * 1000
+            tickInterval: 30 * 24 * 3600 * 1000
         },
         yAxis: {
             title: {text: 'Мощность электроэнергии(Вт)'},
@@ -120,19 +120,19 @@ $(document).ready(function() {
         legend: {
             enabled: false
         },
-        series: [{
+        series: [{ 
             name: 'Мощность',
 
         }]
     },
-
+    
     function (chart) {
-        var request = '?offset=year'
+        var request = 'year'
         if (!chart.renderer.forExport) {
             requestData(chart,request);
             setInterval(function () {
                 requestData(chart,request);
             }, 60000);
         }
-    });
+    }); 
 })
