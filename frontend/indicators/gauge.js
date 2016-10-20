@@ -11,18 +11,18 @@ function updateValue(chartToUpdate) {
             drawPlotBand(chartToUpdate);
             point.update(newVal);
         }
-    );
+    );     
     getWeather();
 }
 
 //Отрисовка зелёного plotBand
 function drawPlotBand(chart) {
-    chart.yAxis[0].removePlotBand('green');
+    chart.yAxis[0].removePlotBand('addgreen');
     chart.yAxis[0].addPlotBand({
-        from: 800,
+        from: 1100,
         to: chart.yAxis[0].max,
         color: '#55BF3B', // green
-        id: 'green'
+        id: 'addgreen'
     });
 }
 
@@ -129,6 +129,11 @@ $(document).ready(function() {
                 to: 800,
                 color: '#DDDF0D', // yellow
                 id: 'yellow'
+            }, {
+                from: 800,
+                to: 1100,
+                color: '#55BF3B', // green
+                id: 'green'
             }]
         },
 
