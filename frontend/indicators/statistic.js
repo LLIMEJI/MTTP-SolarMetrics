@@ -16,10 +16,11 @@ $(document).ready(function() {
             months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
             weekdays: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
             shortMonths: ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
+            rangeSelectorZoom: ['Увеличить:']
         }
     })
-    //Статистика за день
-    $('#chart_24h').highcharts({
+    //Онлайн профиль генерации
+    $('#chart_24h').highcharts('StockChart',{
         credits: {
             enabled: false
         },
@@ -27,18 +28,33 @@ $(document).ready(function() {
             enabled: false
         },
         chart: {
-            type: 'areaspline',
+            type: 'column',
             backgroundColor: null
         },
+        rangeSelector: {
+                buttons: [{
+                    type: 'hour',
+                    count: 24,
+                    text: '1 день'
+                }, {
+                    type: 'all',
+                    text: 'Показать всё'
+                }],
+                buttonTheme: {
+                    width: 100
+                },
+                selected: 1,
+                inputEnabled: false
+        },
         title: {
-            text: 'Статистика работы за день'
+            text: 'Онлайн профиль генерации'
         },
         xAxis: {
             type: 'datetime',
             tickInterval: 3600 * 1000
         },
         yAxis: {
-            title: {text: 'Мощность электроэнергии(Вт)'},
+            title: {text: 'Мощность генерации (Вт)'},
             labels: {enabled: false}
         },
         legend: {
@@ -47,11 +63,18 @@ $(document).ready(function() {
         plotOptions: {
             areaspline: {
                 lineWidth: 3,
-                fillOpacity: 0.5
+                fillOpacity: 0.5,
+                marker: {
+                    enabled: false
+                }
             },
         },
+        navigator: {
+            enabled: false
+        },
         series: [{
-            name: 'Мощность',
+            name: 'Мощность генерации',
+            color: '#ffaa30'
         }]
     },
     // Обновление значений
@@ -65,7 +88,7 @@ $(document).ready(function() {
         }
     });
 
-    //Статистика за месяц
+    //Посуточный график генерации
     $('#chart_month').highcharts({
         credits: {
             enabled: false
@@ -74,31 +97,31 @@ $(document).ready(function() {
             enabled: false
         },
         chart: {
-            type: 'areaspline',
+            type: 'column',
             backgroundColor: null
         },
         title: {
-            text: 'Статистика работы за месяц'
+            text: 'Посуточный график генерации (Вт*Ч/день)'
         },
         xAxis: {
             type: 'datetime',
             tickInterval: 30 * 3600 * 1000
         },
         yAxis: {
-            title: {text: 'Мощность электроэнергии(Вт)'},
+            title: {text: 'Мощность генерации (Вт)'},
             labels: {enabled: false}
         },
         legend: {
             enabled: false
         },
         plotOptions: {
-            areaspline: {
-                lineWidth: 3,
-                fillOpacity: 0.5
-            },
+            series: {
+                groupPadding: 0
+            }
         },
         series: [{
-            name: 'Мощность',
+            name: 'Мощность генерации',
+            color: '#9ac361'
         }]
     },
 
@@ -112,7 +135,7 @@ $(document).ready(function() {
         }
     });
 
-    //Статистика за год
+    //Статистика с момента запуска сервиса
     $('#chart_year').highcharts({
         credits: {
             enabled: false
@@ -121,32 +144,33 @@ $(document).ready(function() {
             enabled: false
         },
         chart: {
-            type: 'areaspline',
+            type: 'column',
             backgroundColor: null
         },
         title: {
-            text: 'Статистика работы за год'
+            text: 'Статистика с момента запуска сервиса'
         },
         xAxis: {
             type: 'datetime',
             tickInterval: 30 * 24 * 3600 * 1000
         },
         yAxis: {
-            title: {text: 'Мощность электроэнергии(Вт)'},
+            title: {text: 'Мощность генерации (Вт)'},
             labels: {enabled: false}
         },
         legend: {
             enabled: false
         },
         plotOptions: {
-            areaspline: {
-                lineWidth: 3,
-                fillOpacity: 0.5
-            },
+            series: {
+                pointWidth: 50,
+                groupPadding: 0
+            }
         },
         series: [{
-            name: 'Мощность'
-        }]
+            name: 'Мощность генерации',
+            color: '#554176'
+        }],
     },
 
     function (chart) {
