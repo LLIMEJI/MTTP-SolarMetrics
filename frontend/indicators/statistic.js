@@ -116,6 +116,7 @@ $(document).ready(function() {
         },
         plotOptions: {
             series: {
+                pointWidth: 25,
                 groupPadding: 0
             }
         },
@@ -174,7 +175,7 @@ $(document).ready(function() {
     },
 
     function (chart) {
-        var request = 'year'
+        var request = 'all'
         if (!chart.renderer.forExport) {
             requestData(chart,request);
             setInterval(function () {
