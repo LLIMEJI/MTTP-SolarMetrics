@@ -11,7 +11,7 @@ function updateValue(chartToUpdate) {
             drawPlotBand(chartToUpdate);
             point.update(newVal);
         }
-    );
+    );     
     getWeather();
 }
 
@@ -21,7 +21,7 @@ function drawPlotBand(chart) {
     chart.yAxis[0].addPlotBand({
         from: 1100,
         to: chart.yAxis[0].max,
-        color: '#55BF3B', // green
+        color: '#9adb8a', // green
         id: 'addgreen'
     });
 }
@@ -47,7 +47,7 @@ $(document).ready(function() {
         },
 
         title: {
-            text: 'Номинальная мощность электроэнергии'
+            text: 'Текущее значение генерации'
         },
 
         tooltip: {
