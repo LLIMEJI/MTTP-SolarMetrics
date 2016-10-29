@@ -1,162 +1,185 @@
-function updateValue(chartToUpdate) {
-    $.getJSON('http://sosvetom.ru/_api/get_metrics/?offset=last',
+function requestData(chartToUpdate,url) {
+    $.getJSON('http://sosvetom.ru/_api/get_metrics/?offset='+url,
         function(data){
-            var point = chartToUpdate.series[0].points[0];
-            var newVal = data[0][1];
-            if (newVal >= chartToUpdate.yAxis[0].max) {
-                chartToUpdate.yAxis[0].setExtremes(0,newVal);
-            } else {
-                chartToUpdate.yAxis[0].setExtremes(0,chartToUpdate.yAxis[0].max);
-            }
-            drawPlotBand(chartToUpdate);
-            point.update(newVal);
+            var chart = chartToUpdate.series[0];
+            chart.setData(data);
+            chartToUpdate.redraw();
         }
     );
-    getWeather();
-}
-
-//Отрисовка зелёного plotBand
-function drawPlotBand(chart) {
-    chart.yAxis[0].removePlotBand('addgreen');
-    chart.yAxis[0].addPlotBand({
-        from: 1100,
-        to: chart.yAxis[0].max,
-        color: '#55BF3B', // green
-        id: 'addgreen'
-    });
-}
-
-function getWeather() {
-    var requestWeather = 'http://apidev.accuweather.com/currentconditions/v1/294021.json?language=ru&apikey=hoArfRosT1215';
-    $.getJSON(requestWeather, function(data){
-        $('#weather').html('<img src="img/'+data[0].WeatherIcon+'.svg" height="50">'+Math.round(data[0].Temperature.Metric.Value)+'°C');
-    });
 }
 
 $(document).ready(function() {
-
-    //Тахометр
-    $('#gauge').highcharts({
-        chart: {
-            type: 'gauge',
-            backgroundColor: null,
-            plotBackgroundColor: null,
-            plotBackgroundImage: null,
-            plotBorderWidth: 0,
-            plotShadow: false
-        },
-
-        title: {
-            text: 'Номинальная мощность электроэнергии'
-        },
-
-        tooltip: {
-                enabled: false
-        },
-
-        exporting: {
-            enabled: false
-        },
-
+    Highcharts.setOptions({
+        global: { useUTC : false},
+        lang: {
+            loading: 'Загрузка...',
+            months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            weekdays: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+            shortMonths: ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
+            rangeSelectorZoom: ['Увеличить:']
+        }
+    })
+    //Онлайн профиль генерации
+    $('#chart_24h').highcharts('StockChart',{
         credits: {
             enabled: false
         },
-
-        pane: {
-            startAngle: -150,
-            endAngle: 150,
-            background: [{
-                backgroundColor: {
-                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                    stops: [
-                        [0, '#FFF'],
-                        [1, '#333']
-                    ]
-                },
-                borderWidth: 0,
-                outerRadius: '109%'
-            }, {
-                backgroundColor: {
-                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                    stops: [
-                        [0, '#333'],
-                        [1, '#FFF']
-                    ]
-                },
-                borderWidth: 1,
-                outerRadius: '107%'
-            }, {
-                // default background
-            }, {
-                backgroundColor: '#DDD',
-                borderWidth: 0,
-                outerRadius: '105%',
-                innerRadius: '103%'
-            }]
+        exporting: {
+            enabled: false
         },
-
-        // the value axis
+        chart: {
+            type: 'column',
+            backgroundColor: null
+        },
+        rangeSelector: {
+                buttons: [{
+                    type: 'hour',
+                    count: 24,
+                    text: '1 день'
+                }, {
+                    type: 'all',
+                    text: 'Показать всё'
+                }],
+                buttonTheme: {
+                    width: 100
+                },
+                selected: 1,
+                inputEnabled: false
+        },
+        title: {
+            text: 'Онлайн профиль генерации'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickInterval: 3600 * 1000
+        },
         yAxis: {
-            min: 0,
-            max: 1100,
-
-            minorTickInterval: 'auto',
-            minorTickWidth: 1,
-            minorTickLength: 10,
-            minorTickPosition: 'inside',
-            minorTickColor: '#666',
-
-            tickPixelInterval: 30,
-            tickWidth: 2,
-            tickPosition: 'inside',
-            tickLength: 10,
-            tickColor: '#666',
-            labels: {
-                step: 2,
-                rotation: 'auto'
-            },
-            title: {
-                useHTML: true,
-                text: '<div id=weather></div>'
-            },
-            plotBands: [{
-                from: 0,
-                to: 300,
-                color: '#DF5353', // red
-                id: 'red'
-            }, {
-                from: 300,
-                to: 800,
-                color: '#DDDF0D', // yellow
-                id: 'yellow'
-            }, {
-                from: 800,
-                to: 1100,
-                color: '#55BF3B', // green
-                id: 'green'
-            }]
+            title: {text: 'Мощность генерации (Вт)'},
+            labels: {enabled: false}
         },
-
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            areaspline: {
+                lineWidth: 3,
+                fillOpacity: 0.5,
+                marker: {
+                    enabled: false
+                }
+            },
+        },
+        navigator: {
+            enabled: false
+        },
         series: [{
-            name: null,
-            data: [0],
-            dataLabels: {
-                 borderWidth: 0,
-                 style: {
-                    'color': '#707070',
-                    'fontSize': '12pt'
-                 },
-            format: '{y} Вт'
-            }
+            name: 'Мощность генерации',
+            color: '#ffaa30'
         }]
-
     },
     // Обновление значений
     function (chart) {
+        var request = 'day'
         if (!chart.renderer.forExport) {
-            updateValue(chart);
+            requestData(chart,request);
             setInterval(function () {
-                updateValue(chart);
+                requestData(chart,request);
+            }, 60000);
+        }
+    });
+
+    //Посуточный график генерации
+    $('#chart_month').highcharts({
+        credits: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        chart: {
+            type: 'column',
+            backgroundColor: null
+        },
+        title: {
+            text: 'Посуточный график генерации (Вт*Ч/день)'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickInterval: 30 * 3600 * 1000
+        },
+        yAxis: {
+            title: {text: 'Мощность генерации (Вт)'},
+            labels: {enabled: false}
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                pointWidth: 25,
+                groupPadding: 0
+            }
+        },
+        series: [{
+            name: 'Мощность генерации',
+            color: '#9ac361'
+        }]
+    },
+
+    function (chart) {
+        var request = 'month'
+        if (!chart.renderer.forExport) {
+            requestData(chart,request);
+            setInterval(function () {
+                requestData(chart,request);
+            }, 60000);
+        }
+    });
+
+    //Статистика с момента запуска сервиса
+    $('#chart_year').highcharts({
+        credits: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        chart: {
+            type: 'column',
+            backgroundColor: null
+        },
+        title: {
+            text: 'Статистика с момента запуска сервиса'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickInterval: 30 * 24 * 3600 * 1000
+        },
+        yAxis: {
+            title: {text: 'Мощность генерации (Вт)'},
+            labels: {enabled: false}
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                pointWidth: 50,
+                groupPadding: 0
+            }
+        },
+        series: [{
+            name: 'Мощность генерации',
+            color: '#554176'
+        }],
+    },
+
+    function (chart) {
+        var request = 'all'
+        if (!chart.renderer.forExport) {
+            requestData(chart,request);
+            setInterval(function () {
+                requestData(chart,request);
             }, 60000);
         }
     });
